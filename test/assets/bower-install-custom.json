@@ -1,0 +1,19 @@
+{
+    "name" : "bower-install-custom",
+    "description": "This file contains lib-files that cannot be copied automatically.",
+    "version" : "0.1.0",
+    "modules" : [
+        [
+        "async",[ "lib/async.js" ]
+        ],
+        [
+        "showdown", [
+            "src/showdown.js",
+            "src/extensions/prettify.js",
+            "src/extensions/table.js",
+            "src/extensions/twitter.js",
+            "src/extensions/github.js"
+            ]
+        ]
+    ]
+}
