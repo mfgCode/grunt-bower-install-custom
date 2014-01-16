@@ -26,20 +26,26 @@ module.exports = (grunt) ->
 		if path.extname(file) == '.js'
 			files.js.push(file)
 
-	# TODO: CONCAT STRING DOESNT WORK
-	generateCode = (files) ->
-			js = (files.js.foreach (file) ->
-				return "<script src=\"" + file + "\"></script>\n"
-			).concat
+	generateCode = ->
+
+			js = ""
+			css = ""
+			for file in files.js
+				# console.log "<script src=\"" + file + "\"></script>\n"
+				js +=  "<script src=\"" + file + "\"></script>\n"
+
+			for file in files.css
+				# console.log "<script src=\"" + file + "\"></script>\n"
+				css +=  "<link rel=\"stylesheet\" href=\"" + file + "\" />\n"
+
 			return {
 				js : js
-				css : files.css.foreach (file) ->
-					return "<link rel=\"stylesheet\" href=\"" + file + "\" />\n"
+				css : css
 			}
 
 	replaceBower = (html, code) ->
-		html = html.replace /<!-- bower:css-->(.*)<!-- endbower -->/,'$1'+code.css
-		html = html.replace /<!-- bower:js-->(.*)<!-- endbower -->/,'$1'+code.js
+		html = html.replace /<!-- bower:css-->(.*\s*)<!-- endbower-->/,'$1'+code.css
+		html = html.replace /<!-- bower:js-->(.*\s*)<!-- endbower-->/,'$1'+code.js
 
 	grunt.registerMultiTask "bower-install-custom", "Install Bower packages packages that were not configured correctly.", ->
 		tasks = []
@@ -73,6 +79,6 @@ module.exports = (grunt) ->
 						grunt.log.ok 'bower-install missed `' + file.grey + '` for module `' + module[0]+'`'
 						add file
 
-			fs.writeFileSync options.html, replaceBower(htmlContent, generateCode(files))
+			fs.writeFileSync options.html, replaceBower(htmlContent,generateCode())
 
 
