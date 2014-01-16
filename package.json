@@ -1,7 +1,7 @@
 {
 	"name": "grunt-bower-install-custom",
 	"description": "This task will add references to css/js files into the bower section from an bower.custom.json file. it will warn about modules where it finds files.",
-	"version": "0.1.1",
+	"version": "0.1.2",
 	"license": "MIT",
 	"author": "Martin Grädler",
     "repository":
@@ -15,5 +15,8 @@
 	"keywords": [
 		"bower",
 		"temporary fix"
-	]
+	],
+	"devDependencies": {
+		"grunt": "~0.4.2"
+	}
 }
