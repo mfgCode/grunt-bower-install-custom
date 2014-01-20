@@ -2,9 +2,10 @@
 (function() {
   "use strict";
   module.exports = function(grunt) {
-    var add, files, fs, generateCode, path, replaceBower;
+    var add, files, fs, generateCode, path, replaceBower, util;
     fs = require("fs");
     path = require("path");
+    util = require("util");
     files = {
       js: [],
       css: []
@@ -37,11 +38,16 @@
       };
     };
     replaceBower = function(html, code) {
-      html = html.replace(/<!-- bower:css-->(.*\s*)<!-- endbower-->/, '$1' + code.css);
-      return html = html.replace(/<!-- bower:js-->(.*\s*)<!-- endbower-->/, '$1' + code.js);
+      if (code.css.length > 0) {
+        html = html.replace(/<\/head>/, code.css + "\n</head>");
+      }
+      if (code.js.length > 0) {
+        html = html.replace(/<\/head>/, code.js + "\n</head>");
+      }
+      return html;
     };
     return grunt.registerMultiTask("bower-install-custom", "Install Bower packages packages that were not configured correctly.", function() {
-      var config, done, htmlContent, options, tasks;
+      var config, done, htmlContent, options, replacedCode, tasks;
       tasks = [];
       done = this.async();
       options = this.options({
@@ -59,7 +65,7 @@
       if (fs.existsSync(options.config)) {
         grunt.log.ok("Found config file " + options.config.grey);
         config = JSON.parse(fs.readFileSync(options.config));
-        console.log(config.modules);
+        console.log(config);
         config.modules.forEach(function(module) {
           grunt.log.ok('Module `' + module[0] + '` with files: ' + module[1]);
           return module[1].forEach(function(file) {
@@ -67,11 +73,12 @@
               return grunt.log.error('bower-install has already installed `' + file.grey + '` for module `' + module[0] + '`');
             } else {
               grunt.log.ok('bower-install missed `' + file.grey + '` for module `' + module[0] + '`');
-              return add(file);
+              return add(config.localpath + "/" + module[0] + "/" + file);
             }
           });
         });
-        return fs.writeFileSync(options.html, replaceBower(htmlContent, generateCode()));
+        replacedCode = replaceBower(htmlContent, generateCode());
+        return fs.writeFileSync(options.html, replacedCode);
       }
     });
   };
