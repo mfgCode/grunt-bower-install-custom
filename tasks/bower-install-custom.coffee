@@ -46,19 +46,13 @@ module.exports = (grunt) ->
 	replaceBower = (html, code) ->
 		# console.log 'html = \n' + html + '\n----'
 		if code.css.length > 0
-			console.log "first: '" + code.css + "'"
+			# console.log "first: '" + code.css + "'"
 			# html = html.replace(/<!-- bower:css-->((?:.*\\r?\\n?)*)<!-- endbower-->/, "TEMP" + "\n" + code.css )
 			html = html.replace(/<\/head>/, code.css+ "\n</head>"  )
-			# html = html.replace /css/, "CSS" + "\n"
-			console.log "fertig!!"
 		if code.js.length > 0
-			console.log "second: '" + code.js + "'"
+			# console.log "second: '" + code.js + "'"
 			# html = html.replace('\/<!-- bower:js-->((?:.*\\r?\\n?)*)<!-- endbower-->\/', "$1" + "\n" + code.js )
 			html = html.replace(/<\/head>/, code.js + "\n</head>" )
-
-# html = html.replace /(<!-- bower:css-->)((?:.*\s?)*)(<!-- endbower-->)/,'$1' + '$2' + code.css + '$3'
-		# html = html.replace /(<!-- bower:js-->)((?:.*\r?\n?)*)(<!-- endbower-->)/,'$1' + '$2' + code.js + '$3'
-		# console.log "html: '" + html + "'"
 		return html
 
 
@@ -92,7 +86,8 @@ module.exports = (grunt) ->
 					else
 						grunt.log.ok 'bower-install missed `' + file.grey + '` for module `' + module[0]+'`'
 						add ( config.localpath + "/" + module[0] + "/" + file)
-			console.log "start replacing ..."
+
+			# console.log "start replacing ..."
 			replacedCode = replaceBower(htmlContent, generateCode())
-			console.log "end replacing ..."
+			# console.log "end replacing ..."
 			fs.writeFileSync options.html, replacedCode
