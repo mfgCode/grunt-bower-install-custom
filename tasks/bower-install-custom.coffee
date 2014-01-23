@@ -11,6 +11,7 @@ module.exports = (grunt) ->
 	# required modules
 	fs = require("fs")
 	path = require("path")
+	util = require "util"
 
 	# global storage for files
 	files =
@@ -27,7 +28,6 @@ module.exports = (grunt) ->
 			files.js.push(file)
 
 	generateCode = ->
-
 			js = ""
 			css = ""
 			for file in files.js
@@ -44,8 +44,17 @@ module.exports = (grunt) ->
 			}
 
 	replaceBower = (html, code) ->
-		html = html.replace /<!-- bower:css-->(.*\s*)<!-- endbower-->/,'$1'+code.css
-		html = html.replace /<!-- bower:js-->(.*\s*)<!-- endbower-->/,'$1'+code.js
+		# console.log 'html = \n' + html + '\n----'
+		if code.css.length > 0
+			# console.log "first: '" + code.css + "'"
+			# html = html.replace(/<!-- bower:css-->((?:.*\\r?\\n?)*)<!-- endbower-->/, "TEMP" + "\n" + code.css )
+			html = html.replace(/<\/head>/, code.css+ "\n</head>"  )
+		if code.js.length > 0
+			# console.log "second: '" + code.js + "'"
+			# html = html.replace('\/<!-- bower:js-->((?:.*\\r?\\n?)*)<!-- endbower-->\/', "$1" + "\n" + code.js )
+			html = html.replace(/<\/head>/, code.js + "\n</head>" )
+		return html
+
 
 	grunt.registerMultiTask "bower-install-custom", "Install Bower packages packages that were not configured correctly.", ->
 		tasks = []
@@ -68,8 +77,7 @@ module.exports = (grunt) ->
 
 			config = JSON.parse(fs.readFileSync(options.config))
 
-			console.log config.modules
-
+			console.log config
 			config.modules.forEach (module) ->
 				grunt.log.ok 'Module `' + module[0] + '` with files: ' + module[1]
 				module[1].forEach (file) ->
@@ -77,8 +85,9 @@ module.exports = (grunt) ->
 						grunt.log.error 'bower-install has already installed `' + file.grey + '` for module `' + module[0]+'`'
 					else
 						grunt.log.ok 'bower-install missed `' + file.grey + '` for module `' + module[0]+'`'
-						add file
+						add ( config.localpath + "/" + module[0] + "/" + file)
 
-			fs.writeFileSync options.html, replaceBower(htmlContent,generateCode())
-
-
+			# console.log "start replacing ..."
+			replacedCode = replaceBower(htmlContent, generateCode())
+			# console.log "end replacing ..."
+			fs.writeFileSync options.html, replacedCode

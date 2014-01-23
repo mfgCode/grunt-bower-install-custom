@@ -15,5 +15,7 @@
             "src/extensions/github.js"
             ]
         ]
-    ]
+    ],
+    "localpath": "lib"
+    
 }
