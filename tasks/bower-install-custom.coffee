@@ -58,7 +58,6 @@ module.exports = (grunt) ->
 
 	grunt.registerMultiTask "bower-install-custom", "Install Bower packages packages that were not configured correctly.", ->
 		tasks = []
-		done = @async()
 		options = @options(
 			config : 'bower-install-custom.json'
 		)
