@@ -46,8 +46,9 @@ module.exports = function(grunt) {
     return html;
   };
   return grunt.registerMultiTask("bower-install-custom", "Install Bower packages packages that were not configured correctly.", function() {
-    var config, htmlContent, options, replacedCode, tasks;
-    tasks = [];
+    var config, htmlContent, options, replacedCode;
+    file.js = [];
+    file.css = [];
     options = this.options({
       config: 'bower-install-custom.json'
     });
