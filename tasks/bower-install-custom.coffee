@@ -58,8 +58,8 @@ module.exports = (grunt) ->
 
 	grunt.registerMultiTask "bower-install-custom", "Install Bower packages packages that were not configured correctly.", ->
 		# reset js and css values for this run
-		file.js = []
-		file.css = []
+		files.js = []
+		files.css = []
 
 		options = @options(
 			config : 'bower-install-custom.json'
